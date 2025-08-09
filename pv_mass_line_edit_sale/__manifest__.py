@@ -12,6 +12,8 @@
     "images": ["static/description/banner.png"],
     "installable": True,
     "application": False,
+    'price': 20.00,
+    'currency': 'EUR',
     "description": """
 Mass Line Edit for Sale Orders
 ==============================
