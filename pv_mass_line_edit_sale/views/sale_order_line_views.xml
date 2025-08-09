@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_sale_order_mass_selection" model="ir.ui.view">
+    <field name="name">sale.order.mass.selection</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+
+      <!-- Master toggle as a normal field in a group above the notebook -->
+      <xpath expr="//sheet/notebook" position="before">
+        <group string="Mass Edit" colspan="4">
+          <field name="select_all_lines"/>
+        </group>
+      </xpath>
+
+      <!-- Per-line toggle inside the order_line list (first column) -->
+      <xpath expr="//field[@name='order_line']//list" position="inside">
+        <field name="apply_all" widget="boolean_toggle"/>
+      </xpath>
+
+    </field>
+  </record>
+</odoo>

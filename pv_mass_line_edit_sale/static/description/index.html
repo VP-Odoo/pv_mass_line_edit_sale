@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Mass Line Edit – Sale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: Inter, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#222; line-height:1.55; margin:0; }
+    .wrap { max-width: 980px; margin:0 auto; padding: 32px 24px 48px; }
+    h1 { font-size: 28px; margin: 0 0 12px; }
+    h2 { font-size: 20px; margin: 28px 0 8px; }
+    p { margin: 10px 0; }
+    ul { margin: 8px 0 16px 22px; }
+    li { margin: 6px 0; }
+    .hero { background:#f6f7f9; border:1px solid #e6e8ec; padding:16px 18px; border-radius:10px; }
+    .pill { display:inline-block; background:#eef6ff; border:1px solid #d9ebff; color:#0b64c0; padding:2px 8px; border-radius:999px; font-size:12px; margin-right:6px; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+    .card { border:1px solid #e6e8ec; border-radius:10px; padding:14px 16px; background:#fff; }
+    .note { background:#fffaf0; border:1px solid #ffe5b4; padding:12px 14px; border-radius:8px; }
+    .footer { margin-top:36px; padding-top:12px; border-top:1px solid #eee; font-size:13px; color:#666; }
+    code { background:#f7f7f9; border:1px solid #eee; padding:2px 6px; border-radius:4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <h1>Mass Line Edit – Sale</h1>
+    <p class="hero">
+      Bulk-edit sale order lines directly in the order form. Tick <em>Apply to All</em> on the lines you want to sync,
+      change one of them (Quantity, Price, Taxes, Description, etc.), and the same change is propagated to the other
+      selected lines automatically.
+    </p>
+
+    <div>
+      <span class="pill">Odoo 18</span>
+      <span class="pill">Sales</span>
+      <span class="pill">Quotations &amp; Sales Orders</span>
+      <span class="pill">LGPL-3</span>
+    </div>
+
+    <h2>Why this module?</h2>
+    <p>
+      Updating the same value across several order lines is repetitive and error-prone. This add-on introduces an
+      opt-in mass-edit flow so you change once and apply consistently—no wizards, no exports.
+    </p>
+
+    <h2>Key features</h2>
+    <ul>
+      <li><strong>Master toggle:</strong> a <em>Mass Edit</em> box with <em>Select All Lines</em> on the SO form.</li>
+      <li><strong>Per-line control:</strong> each order line gets an <em>Apply to All</em> toggle (compact switch).</li>
+      <li><strong>Instant propagation:</strong> edits to any enabled line are copied to all other enabled lines of the same order.</li>
+      <li><strong>Generic by design:</strong> the module pushes whatever fields you changed on the edited line, excluding the toggle itself.</li>
+      <li><strong>Safe recursion guard:</strong> a context flag prevents infinite loops while propagating.</li>
+      <li><strong>Native UX:</strong> master control above the tabs; per-line switch as the first column in the lines list.</li>
+    </ul>
+
+    <h2>Supported flows</h2>
+    <div class="grid">
+      <div class="card"><strong>Quotations</strong><br><span class="muted">Draft stage</span></div>
+      <div class="card"><strong>Sales Orders</strong><br><span class="muted">Confirmed orders*</span></div>
+    </div>
+    <p class="note"><strong>Note:</strong> Standard Odoo restrictions apply (e.g., some fields become read-only after confirmation).</p>
+
+    <h2>How it works</h2>
+    <ol>
+      <li>Open any quotation / sales order.</li>
+      <li>Use <strong>Select All Lines</strong> to opt in every line, or toggle <strong>Apply to All</strong> only on the lines you want linked.</li>
+      <li>Edit a value on one of the enabled lines (e.g., <em>Quantity</em>, <em>Price</em>, <em>Taxes</em>, <em>Description</em>).</li>
+      <li>All other enabled lines update immediately with the same change.</li>
+    </ol>
+
+    <h2>Permissions &amp; compatibility</h2>
+    <ul>
+      <li>Respects standard <code>sale</code> security and record rules.</li>
+      <li>No configuration required. Install and use.</li>
+      <li>Works with the standard Sales Order form and lines list.</li>
+    </ul>
+
+    <h2>Technical overview</h2>
+    <ul>
+      <li>Model extensions:
+        <ul>
+          <li><code>sale.order</code> → Boolean <code>select_all_lines</code> + onchange to toggle line flags.</li>
+          <li><code>sale.order.line</code> → Boolean <code>apply_all</code> + <code>write()</code> override that pushes edited fields to sibling lines (same order).</li>
+        </ul>
+      </li>
+      <li>Safety: propagation uses a <code>mass_edit_propagation</code> context guard to avoid recursive writes.</li>
+    </ul>
+
+    <h2>Changelog</h2>
+    <ul>
+      <li><strong>18.0.1.0.1</strong> – Initial public release for Odoo 18.</li>
+    </ul>
+
+    <p class="footer">
+      Need a field whitelist, tests, or support for custom Sales views? We can tailor it to your workflow.
+    </p>
+  </div>
+</body>
+</html>
